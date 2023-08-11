@@ -1,0 +1,24 @@
+services:
+    database:
+        image: picasso/database:latest
+        volumes:
+          - "configs/database:/config.yml"
+        networks:
+            - picasso_network
+
+    server:
+        image: picasso/server:latest
+        volumes:
+          - "configs/server:/config.yml"
+        networks:
+            - picasso_network
+        ports:
+          - "9000:9000"
+
+networks:
+    picasso_network:
+        ipam:
+            driver: default
+            config:
+                - subnet: 4.0.1.0/24
+                  gateway: 4.0.1.1
