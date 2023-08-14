@@ -1,19 +1,25 @@
 services:
     database:
         image: picasso/database:latest
-        volumes:
-          - "configs/database:/config.yml"
         networks:
             - picasso_network
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_SSL: ${POSTGRES_SSL}
 
     server:
         image: picasso/server:latest
         volumes:
-          - "configs/server:/config.yml"
+          - "./configs/config.yml:/config.yml"
         networks:
             - picasso_network
         ports:
           - "9000:9000"
+        depends_on:
+            database:
+                condition: service_healthy
 
 networks:
     picasso_network:

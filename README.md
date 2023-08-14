@@ -9,26 +9,27 @@ Ability to host images on a networked service.
 ### Solution:
 
 <p>
-HTTP Server to host image storage. A user will create an account, save, delete, and download their images.
+HTTP Server to host image storage. A user will create an account, save, delete, and download
+their images.
 </p>
 
 ## Development Notes:
 
 <p>
-Golang documentation can be found at: https://go.dev/doc/<br>
-PostgreSQL documentation can be found at: https://www.postgresql.org/docs/
+Golang documentation can be found at: <a href="https://go.dev/doc/">Golang</a><br>
+PostgreSQL documentation can be found at: <a href="https://www.postgresql.org/docs/">
+PostgreSQL</a><br>
 </p>
 
-## Summary of solution
+## Summary of solution (Requirements)
 
 <p>
 We will be using Docker containers to host 2 services:
 <ol>
-<li>Database, `postgresql`:</li>
-The `Database` will receive data from:
+<li>Database, postgresql:</li>
+The Database will receive data from:
 <ol type='i'>
-<li>The `Subscriber`.</li>
-<li>The `HTTP Server`.</li>
+<li>The HTTP Server.</li>
 </ol>
 
 <li>Server, Custom HTTP Server written in Golang:</li>
@@ -37,7 +38,7 @@ The Server will:
 <li>Require a user to register an account.</li>
 <li>Require a user to sign-in to their account.</li>
 <li>Allow users to upload images.</li>
-<li>Allow users to see a list of their saved images on their account from their machine.</li>
+<li>Allow users to see a list of their saved images on their account.</li>
 <li>Allow users to delete an image on their account.</li>
 <li>Allow users to download an image on their account to their machine.</li>
 </ol>
@@ -49,12 +50,27 @@ The Server will:
 ### Building
 
 Use the `make` recipe:
-> `user@host:$>make database`
+```bash
+user@host:$>make database
+```
 
 ### Developing
 
-All related material for the development of the `Database` will be found in the `database/` directory.
-All configurations required during the runtime of `Database` will be found in the `configs/` directory.
+<p>
+All related material for the development of the <em>Database</em> will be found in the 
+<em>database/</em> directory.<br>
+Some configurations required during the runtime of <em>Database</em> will be found in the
+<em>configs/</em> directory.<br>
+Most configurations for the <em>Database</em> are found in the <em>database/</em> directory.<br>
+<ol>
+<li>initDatabase.sql:</li>
+This file is used to create the database, schemas, and tables.
+<li>initUser.sql</li>
+This file is used to create the users that will have permissions for the tables.
+<li>wait-for-it.sh</li>
+Used to announce to other Docker containers if the <em>Database</em> has started.
+</ol>
+</p>
 
 ### Testing
 
@@ -62,10 +78,11 @@ All configurations required during the runtime of `Database` will be found in th
 Minimum testing is required for:
 <ol>
 <li>Logging into accounts that do not exist.</li>
-<li>Inserting images of 0 bytes.</li>
-<li>Inserting images of 1 Gigabyte. (1,073,741,824 bytes)</li>
+<li>Inserting images into valid paths.</li>
+<li>Inserting images into invalid paths.</li>
 <li>Deleting images that do not exist.</li>
 <li>Downloading images that do not exist.</li>
+TODO: Add to the list as test cases are created.
 </ol>
 </p>
 
@@ -74,12 +91,18 @@ Minimum testing is required for:
 ### Building
 
 Use the `make` recipe:
-> `user@host:$>make server`
+```bash
+user@host:$>make server
+```
 
 ### Developing
 
-All related material for the development of the `Server` will be found in the `server/` directory.
-All configurations required during the runtime of `Server` will be found in the `configs/` directory.
+<p>
+All related material for the development of the Server will be found in the <em>server/</em>
+directory.<br>
+All configurations required during the runtime of Server will be found in the <em>configs/</em>
+directory.<br>
+</p>
 
 ### Testing
 
@@ -87,6 +110,8 @@ All configurations required during the runtime of `Server` will be found in the 
 Minimum testing is required for:
 <ol>
 <li>Logging into accounts that do not exist.</li>
+<li>Inserting images into valid paths.</li>
+<li>Inserting images into invalid paths.</li>
 <li>Inserting images of 0 bytes.</li>
 <li>Inserting images of 1 Gigabyte. (1,073,741,824 bytes)</li>
 <li>Deleting images that do not exist.</li>
@@ -100,7 +125,9 @@ TODO: Add to the list as test cases are created.
 ### Deployment
 
 Use the `make` recipe:
-> `user@host:$>make run`
+```bash
+user@host:$>make run
+```
 
 ### Testing
 
@@ -120,6 +147,6 @@ TODO: Add to the list as test cases are created.
 
 ### Recipes:
 
-`database` - Pulls the Docker image of a `postgresql` free to use database and includes the project's tables, triggers, configurations, etc.<br>
-`server` - Builds our HTTP Server solution.
-# picasso
+`database` - Pulls the Docker image of a `postgresql` free to use database and includes the
+project's tables, triggers, configurations, etc.<br>
+`server` - Builds our `HTTP Server` solution.

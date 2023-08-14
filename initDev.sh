@@ -19,3 +19,11 @@ source ~/.bashrc
 echo "export GOPATH=$HOME/go" >> ~/.bashrc
 echo "export PATH=$PATH:$GOPATH/bin" >> ~/.bashrc
 source ~/.bashrc
+
+# Initialize the Go project folder
+echo'''\
+cd server
+go mod init main
+'''
+cd server
+go mod init main

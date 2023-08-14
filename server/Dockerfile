@@ -1,23 +1,22 @@
 ################################################################
 # Builds a Docker image for the Picasso server.
 ################################################################
-# stage1, compile
-FROM golang:latest as stage1
+FROM golang:latest as build
 
 WORKDIR /picasso
 # Copy source code
-COPY main.go .
+COPY *.go .
+COPY go.mod .
 # Compile the source code
 RUN CGO_ENABLED=0 GOOS=linux go build -o picasso
 
 #--------------------------------------------------------------
-# stage2, run the service
-FROM alpine:latest as stage2
+FROM alpine:latest as service
 
 WORKDIR /picasso
-# Copy binary
-COPY --from=stage1 /picasso/picasso .
-# Copy configuration files
-COPY ./configs/server.yml /picasso/config.yml
+# Create the directory to store images on local file disk instead of the database
+RUN ["mkdir", "/picasso/images"]
+# Copy artifacts from build
+COPY --from=build /picasso/picasso .
 # Entry point for container
 CMD ["/picasso/picasso"]

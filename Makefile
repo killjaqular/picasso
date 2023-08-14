@@ -13,7 +13,6 @@ database:
 
 .PHONY: server
 server:
-	go build server/main.go
 	docker build -t $(REGISTRY)/server:latest\
 		server/
 
