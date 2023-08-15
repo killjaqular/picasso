@@ -1,10 +1,9 @@
-picasso: # Default configurations
-    database:
-        host: "127.0.0.1"
-        port: "5432"
-        username: "picasso"
-        password: "picasso"
+database:
+    host: "127.0.0.1"
+    port: 5432
+    database: "picasso"
+    username: "picasso"
+    password: "picasso"
 
-    server:
-        host: "127.0.0.1"
-        port: "9000"
+server:
+    port: 9000

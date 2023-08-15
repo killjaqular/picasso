@@ -5,8 +5,13 @@ FROM golang:latest as build
 
 WORKDIR /picasso
 # Copy source code
-COPY *.go .
+COPY main.go .
 COPY go.mod .
+COPY lib ./lib
+# Install go required packages
+RUN go get github.com/lib/pq
+RUN go get gopkg.in/yaml.v2
+
 # Compile the source code
 RUN CGO_ENABLED=0 GOOS=linux go build -o picasso
 
