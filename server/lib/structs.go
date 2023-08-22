@@ -17,20 +17,6 @@ type Config struct {
     } `yaml:"database"`
 }
 
-// TODO: Create type structs for uuids.uuid and accounts.user
-/*
-CREATE TABLE IF NOT EXISTS uuids.uuid (
-    uuid UUID PRIMARY KEY,
-    parentTable VARCHAR(64) -- The table that contains the actual asset of the UUID
-);
-
-CREATE TABLE IF NOT EXISTS accounts.user (
-    uuid UUID PRIMARY KEY REFERENCES uuids.uuid(uuid),
-    username VARCHAR(16) UNIQUE, -- No repeated usernames allowed
-    password VARCHAR(256) -- SHA256
-);
-*/
-
 /*
 CREATE TABLE IF NOT EXISTS uuids.uuid (
     uuid UUID PRIMARY KEY,
