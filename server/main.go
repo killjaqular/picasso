@@ -15,10 +15,6 @@ import (
     "gopkg.in/yaml.v2"
 )
 
-func homePage(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintln(w, "Picasso")
-}
-
 func main() {
     ////////////////////////////////////////////////////////////////
     // Initialize server
@@ -66,8 +62,24 @@ func main() {
     }
     defer rows.Close()
 
-    // 4. Try to host service on host:port
-    http.HandleFunc("/", homePage)
+    ////////////////////////////////////////////////////////////////
+    // Serve static files
+    ////////////////////////////////////////////////////////////////
+    imageFs := http.FileServer(http.Dir("/picasso/images/"))
+    http.Handle("/picasso/images/", http.StripPrefix("/picasso/images/", imageFs))
+    fontsFs := http.FileServer(http.Dir("/picasso/fonts/"))
+    http.Handle("/picasso/fonts/", http.StripPrefix("/picasso/fonts/", fontsFs))
+
+    ////////////////////////////////////////////////////////////////
+    // Setup all handlers/endpoints
+    ////////////////////////////////////////////////////////////////
+    handlers := lib.Handlers{} // Create an instance of the Handlers struct
+    http.HandleFunc("/", handlers.HomePage)
+    http.HandleFunc("/create-account", handlers.CreateAccountHandler) // create-account
+
+    ////////////////////////////////////////////////////////////////
+    // Start service on host:port
+    ////////////////////////////////////////////////////////////////
     log.Printf("[i] Picasso server on port %s\n", port)
     log.Fatal(http.ListenAndServe(":"+port, nil))
 }

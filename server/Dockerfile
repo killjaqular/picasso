@@ -21,5 +21,8 @@ FROM alpine:latest as service
 WORKDIR /picasso
 # Copy artifacts from build
 COPY --from=build /picasso/picasso .
+COPY images/ /picasso/images/
+COPY lib/fonts/ /picasso/fonts/
+
 # Entry point for container
 CMD ["/picasso/picasso"]
