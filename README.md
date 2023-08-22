@@ -126,6 +126,7 @@ TODO: Add to the list as test cases are created.
 
 Use the `make` recipe:
 ```bash
+user@host:$>make all
 user@host:$>make run
 ```
 
