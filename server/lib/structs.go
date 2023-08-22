@@ -15,16 +15,6 @@ type Config struct {
         Username string `yaml:"username"`
         Password string `yaml:"password"`
     } `yaml:"database"`
-    Server struct {
-        Port int `yaml:"port"`
-    } `yaml:"server"`
-    Database struct {
-        Host     string `yaml:"host"`
-        Port     int    `yaml:"port"`
-        Database string `yaml:"database"`
-        Username string `yaml:"username"`
-        Password string `yaml:"password"`
-    } `yaml:"database"`
 }
 
 // TODO: Create type structs for uuids.uuid and accounts.user
