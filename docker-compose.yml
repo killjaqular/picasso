@@ -12,8 +12,8 @@ services:
     server:
         image: picasso/server:latest
         volumes:
-          - "./configs/config.yml:/config.yml"
-          - "./server/images:/picasso/images"
+          - "./configs/config.yml:/picasso/config.yml"
+          - "./server/images/:/picasso/images/"
         networks:
             - picasso_network
         ports:

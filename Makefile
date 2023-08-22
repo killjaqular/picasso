@@ -9,7 +9,6 @@ all: database server
 .PHONY: database
 database:
 	docker build -t $(REGISTRY)/database:latest\
-		--no-cache\
 		database/
 
 .PHONY: server

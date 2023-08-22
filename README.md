@@ -150,4 +150,4 @@ TODO: Add to the list as test cases are created.
 
 `database` - Pulls the Docker image of a `postgresql` free to use database and includes the
 project's tables, triggers, configurations, etc.<br>
-`server` - Builds our `HTTP Server` solution.
+`server` - Builds our `HTTP Server` solution.<br>
