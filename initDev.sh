@@ -32,7 +32,3 @@ sudo docker info
 echo "export GOPATH=$HOME/go" >> ~/.bashrc
 echo "export PATH=$PATH:$GOPATH/bin" >> ~/.bashrc
 source ~/.bashrc
-
-# Initialize the Go project folder
-cd server
-go mod init main
