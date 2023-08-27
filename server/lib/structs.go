@@ -1,7 +1,8 @@
 package lib
 
 import (
-    "github.com/google/uuid" // Import the UUID package
+    // Non-standard Golang
+    "github.com/google/uuid"
 )
 
 type Config struct {
