@@ -30,7 +30,6 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-
     log.Printf("[i] Server Port: %d\n", config.Server.Port)
     log.Printf("[i] Database Host: %s\n", config.Database.Host)
     log.Printf("[i] Database Port: %d\n", config.Database.Port)
@@ -52,8 +51,7 @@ func main() {
         log.Fatal(err)
     }
     defer databaseConnection.Close()
-
-    // Query the database to verify the connection
+    // 4. Query the database to verify the connection
     rows, err := databaseConnection.Query("SELECT 1 FROM uuids.uuid;")
     if err != nil {
         log.Fatal(err)
@@ -73,9 +71,10 @@ func main() {
     ////////////////////////////////////////////////////////////////
     // Setup all handlers/endpoints
     ////////////////////////////////////////////////////////////////
-    handlers := lib.Handlers{} // Create an instance of the Handlers struct
+    // Create an instance of the Handlers struct and register handlers
+    handlers := lib.Handlers{}
     http.HandleFunc("/", handlers.HomePage)
-    http.HandleFunc("/create-account", handlers.CreateAccountHandler) // create-account
+    http.HandleFunc("/create-account", handlers.CreateAccountHandler(databaseConnection))
 
     ////////////////////////////////////////////////////////////////
     // Start service on host:port

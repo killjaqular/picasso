@@ -1,8 +1,15 @@
 package lib
 
 import (
+    // Standard Golang
+    "crypto/sha256"
+    "database/sql"
     "fmt"
+    "log"
     "net/http"
+
+    // Non-standard Golang
+    "github.com/google/uuid"
 )
 
 type Handlers struct{}
@@ -96,32 +103,160 @@ func (h Handlers) HomePage(w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, html)
 }
 
-func (h Handlers) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
-    if r.Method == http.MethodPost {
-        // Get the form values
-        username := r.FormValue("username")
-        password := r.FormValue("password")
+func (h Handlers) CreateAccountHandler(databaseConnection *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        if r.Method == http.MethodPost {
+            // Get the form values
+            username := r.FormValue("username")
+            password := r.FormValue("password")
 
-        ////////////////////////////////////////////////////////////////
-        // TODO: Check if username is already taken
-        ////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////
+            // Create instances to hold the information
+            ////////////////////////////////////////////////////////////////
+            // Populate information for a User
+            var newUser User
+            // Generate UUID for the new user
+            newUser.UUID = uuid.New()
+            newUser.Username = username
+            // Generate SHA256bit of the password
+            newUser.Password = fmt.Sprintf("%x", sha256.Sum256([]byte(password)))
+            // Populate information for a UUID
+            var newUUID UUIDRecord
+            newUUID.UUID = newUser.UUID
 
-        ////////////////////////////////////////////////////////////////
-        // TODO: Create hash for password
-        ////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////
+            // Check if username is already used in the database
+            ////////////////////////////////////////////////////////////////
+            // 1. Query for username
+            var existingUsername string
+            err := databaseConnection.QueryRow("SELECT username FROM accounts.user WHERE username = $1",
+                                               username).Scan(&existingUsername)
+            if err == nil {
+                // 2.a if present, reject user creation with pop-up and redirection
+                userExistsError := `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Username Taken</title>
+                    <style>
+                        body {
+                            background-image: url('/picasso/images/homepage.jpg');
+                            background-size: cover;
+                            background-repeat: no-repeat;
+                            background-attachment: fixed;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100vh;
+                            margin: 0;
+                        }
+                        .popup {
+                            background-color: rgba(0, 0, 0, 0.8);
+                            color: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            text-align: center;
+                        }
+                        .button {
+                            padding: 10px 20px;
+                            background-color: #f44336;
+                            border: none;
+                            color: white;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="popup">
+                        <h2>Username is already taken.</h2>
+                        <p>Please choose a different username.</p>
+                        <button class="button" onclick="redirectToHomepage()">OK</button>
+                    </div>
+                    <script>
+                        function redirectToHomepage() {
+                            window.location.href = "/";
+                        }
+                    </script>
+                </body>
+                </html>
+                `
+                fmt.Fprintln(w, userExistsError)
+                return
+            } else if err != sql.ErrNoRows {
+                // Handle other query errors
+                log.Fatal(err)
+            }
+            // 2.b if absent, insert new user and new uuid into database
+            _, err = databaseConnection.Exec("INSERT INTO uuids.uuid (uuid, parentTable) VALUES ($1, $2)",
+                                             newUUID.UUID, "accounts.user")
+            if err != nil {
+                log.Fatal(err)
+            }
+            log.Printf("[i] Inserted new uuid:")
+            log.Printf("           uuid: %s\n", newUUID.UUID)
+            log.Printf("    parentTable: %s\n", "accounts.user")
+            _, err = databaseConnection.Exec("INSERT INTO accounts.user (uuid, username, password) VALUES ($1, $2, $3)",
+                                             newUser.UUID, newUser.Username, newUser.Password)
+            if err != nil {
+                log.Fatal(err)
+            }
+            log.Printf("[i] Inserted new user:")
+            log.Printf("        uuid: %s\n", newUUID.UUID)
+            log.Printf("    username: %s\n", newUser.Username)
+            log.Printf("    password: %s\n", newUser.Password)
 
-        ////////////////////////////////////////////////////////////////
-        // TODO: Create UUID for username
-        ////////////////////////////////////////////////////////////////
-
-        ////////////////////////////////////////////////////////////////
-        // TODO: Insert UUID, username, password into 
-        ////////////////////////////////////////////////////////////////
-
-        // Respond with a message
-        message := fmt.Sprintf("[i] Account created for %s:%s", username, password)
-        fmt.Fprintln(w, message)
-    } else {
-        http.Error(w, "[x] Method not allowed", http.StatusMethodNotAllowed)
+            userCreateSuccess := `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>New User Created!</title>
+                <style>
+                    body {
+                        background-image: url('/picasso/images/homepage.jpg');
+                        background-size: cover;
+                        background-repeat: no-repeat;
+                        background-attachment: fixed;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        margin: 0;
+                    }
+                    .popup {
+                        background-color: rgba(0, 0, 0, 0.8);
+                        color: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        text-align: center;
+                    }
+                    .button {
+                        padding: 10px 20px;
+                        background-color: #f44336;
+                        border: none;
+                        color: white;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="popup">
+                    <h2>New User Created!</h2>
+                    <p>You may now login with your account.</p>
+                    <button class="button" onclick="redirectToHomepage()">OK</button>
+                </div>
+                <script>
+                    function redirectToHomepage() {
+                        window.location.href = "/";
+                    }
+                </script>
+            </body>
+            </html>
+            `
+            fmt.Fprintln(w, userCreateSuccess)
+        } else {
+            http.Error(w, "[x] Method not allowed", http.StatusMethodNotAllowed)
+        }
     }
 }
