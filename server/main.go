@@ -75,6 +75,12 @@ func main() {
     handlers := lib.Handlers{}
     http.HandleFunc("/", handlers.HomePage)
     http.HandleFunc("/create-account", handlers.CreateAccountHandler(databaseConnection))
+    http.HandleFunc("/login-account", handlers.LoginAccountHandler(databaseConnection))
+    http.HandleFunc("/dashboard", handlers.Dashboard)
+    // http.HandleFunc("/logout-account", handlers.LogoutAccountHandler(databaseConnection))
+    // http.HandleFunc("/upload-image", handlers.UploadImageHandler(databaseConnection))
+    // http.HandleFunc("/download-image", handlers.DownloadImageHandler(databaseConnection))
+    // http.HandleFunc("/delete-image", handlers.DeleteImageHandler(databaseConnection))
 
     ////////////////////////////////////////////////////////////////
     // Start service on host:port
