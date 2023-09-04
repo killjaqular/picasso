@@ -32,8 +32,7 @@ CREATE TABLE IF NOT EXISTS images.image (
 );
 
 CREATE TABLE IF NOT EXISTS sessionKeys.session (
-    uuid UUID PRIMARY KEY REFERENCES uuids.uuid(uuid),
-    sessionKey VARCHAR(256), -- The session key of a user
+    sessionKey BYTEA, -- The session key of a user
     userUUID UUID REFERENCES accounts.user(uuid) -- Foreign key referencing user UUID
     expiration  TIMESTAMP WITH TIME ZONE -- Time sessionKey will expire and user must re-login
 );

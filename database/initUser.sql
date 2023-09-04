@@ -8,8 +8,8 @@ BEGIN
     END IF;
 END;
 $$;
--- This role is meant to be used for troubleshooting and maintenance by directly connecting to
--- the database at its host:port
+-- This role is meant to be used for troubleshooting and maintenance by directly
+-- connecting to the database at its host:port
 DO
 $$
 BEGIN
@@ -31,12 +31,12 @@ GRANT USAGE ON SCHEMA sessionKeys TO adminuser;
 GRANT USAGE ON SCHEMA uuids TO adminuser;
 
 -- Grant permissions on tables
-GRANT SELECT, INSERT ON accounts.user TO picasso;
-GRANT SELECT, INSERT ON images.image TO picasso;
-GRANT SELECT, INSERT ON sessionKeys.session TO picasso;
-GRANT SELECT, INSERT ON uuids.uuid TO picasso;
+GRANT INSERT, SELECT ON accounts.user TO picasso;
+GRANT DELETE, INSERT, SELECT ON images.image TO picasso;
+GRANT DELETE, INSERT, SELECT ON sessionKeys.session TO picasso;
+GRANT DELETE, INSERT, SELECT ON uuids.uuid TO picasso;
 
-GRANT SELECT, INSERT ON accounts.user TO adminuser;
-GRANT SELECT, INSERT ON images.image TO adminuser;
-GRANT SELECT, INSERT ON sessionKeys.session TO adminuser;
-GRANT SELECT, INSERT ON uuids.uuid TO adminuser;
+GRANT DELETE, INSERT, SELECT, UPDATE ON accounts.user TO adminuser;
+GRANT DELETE, INSERT, SELECT, UPDATE ON images.image TO adminuser;
+GRANT DELETE, INSERT, SELECT, UPDATE ON sessionKeys.session TO adminuser;
+GRANT DELETE, INSERT, SELECT, UPDATE ON uuids.uuid TO adminuser;
