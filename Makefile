@@ -24,13 +24,17 @@ server:
 run:
 	docker compose up
 
+.PHONY: down
+stop:
+	docker compose down
+
 .PHONY: stop
 stop:
 	docker compose stop
 
 # Cleaning recipes
 .PHONY: clean
-clean: stop
+clean: stop down
 	docker rmi -f\
 		$(REGISTRY)/database:latest\
 		$(REGISTRY)/server:latest
