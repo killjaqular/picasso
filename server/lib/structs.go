@@ -1,6 +1,9 @@
 package lib
 
 import (
+    // Standard Golang
+    "time"
+
     // Non-standard Golang
     "github.com/google/uuid"
 )
@@ -40,4 +43,17 @@ type User struct {
     UUID     uuid.UUID `json:"uuid"`
     Username string    `json:"username"`
     Password string    `json:"password"`
+}
+
+/*
+CREATE TABLE IF NOT EXISTS sessionKeys.session (
+    sessionKey BYTEA, -- The session key of a user
+    userUUID UUID REFERENCES accounts.user(uuid), -- Foreign key referencing user UUID
+    expiration  TIMESTAMP WITH TIME ZONE -- Time sessionKey will expire and user must re-login
+);
+*/
+type Session struct {
+    SessionKey []byte    `json:"sessionKey"`
+    UserUUID   uuid.UUID `json:"userUUID"`
+    Expiration time.Time `json:"expiration"`
 }
