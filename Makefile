@@ -25,7 +25,7 @@ run:
 	docker compose up
 
 .PHONY: down
-stop:
+down:
 	docker compose down
 
 .PHONY: stop
